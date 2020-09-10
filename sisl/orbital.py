@@ -353,11 +353,13 @@ class SphericalOrbital(Orbital):
     True
     """
     # Additional slots (inherited classes retain the same slots)
-    __slots__ = ['l', 'f']
+    __slots__ = ['l', 'f', '_r_inp_array', '_f_inp_array']
 
     def __init__(self, l, rf_or_func, q0=0., tag='', **kwargs):
         """ Initialize spherical orbital object """
         self.l = l
+        self._r_inp_array = None
+        self._f_inp_array = None
 
         # Set the internal function
         if callable(rf_or_func):
@@ -501,6 +503,10 @@ class SphericalOrbital(Orbital):
             idx = np.argsort(r)
             r = r[idx]
             f = f[idx]
+
+            # Save r and f in an attribute, needed by AiiDA
+            self._r_inp_array = r
+            self._f_inp_array = f
 
             # k = 3 == cubic spline
             # ext = 1 == return zero outside of bounds.
